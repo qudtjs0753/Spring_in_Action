@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -22,6 +23,15 @@ import static com.example.tacocloud.Ingredient.*;
 @Controller
 @RequestMapping("/design")
 public class DesignTacoController {
+
+    @PostMapping
+    public String processDesign(Taco design){
+        //여기서 선택된 식자재 내역을 저장
+        //3장에서 할 예정
+        log.info("Processing design: " + design);
+
+        return "redirect:/orders/current";
+    }
 
 
     //Model : 컨트롤러와 데이터를 보여주는 뷰 사이에서 데이터를 운반하는 객체.
