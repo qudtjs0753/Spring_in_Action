@@ -5,16 +5,17 @@ import com.example.tacocloud.Taco;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static com.example.tacocloud.Ingredient.*;
+import static com.example.tacocloud.Ingredient.Type;
 
 /**
  * @Author: kbs
@@ -25,11 +26,19 @@ import static com.example.tacocloud.Ingredient.*;
 public class DesignTacoController {
 
     @PostMapping
-    public String processDesign(Taco design){
+    public String processDesign(@Valid Taco design, Errors errors){
+        //validation flow
+        //1. 제출할 때 object="${taco}를 통해 Taco 객체에 바인딩
+        //2. 바인딩되었을 때 Validation 시작.
+        //3. Validation하고 오류 있으면 상세 내역이 Errors 객체에 저장되어 processDesign으로 같이 전달.
+        //에러 있는지 체크하고 있으면 폼으로 다시 돌아감.
+        if(errors.hasErrors()){
+            return "design";
+        }
+
         //여기서 선택된 식자재 내역을 저장
         //3장에서 할 예정
         log.info("Processing design: " + design);
-
         return "redirect:/orders/current";
     }
 
