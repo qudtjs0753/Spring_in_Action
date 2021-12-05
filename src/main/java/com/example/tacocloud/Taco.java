@@ -1,10 +1,10 @@
 package com.example.tacocloud;
 
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,4 +20,6 @@ public class Taco {
     @Size(min=1, message="You must choose at least 1 ingredient")
     private List<String> ingredients;
 
+    private Long id;
+    private Date createAt;
 }
