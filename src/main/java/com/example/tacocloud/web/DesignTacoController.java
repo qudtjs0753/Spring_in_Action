@@ -1,16 +1,16 @@
 package com.example.tacocloud.web;
 
 import com.example.tacocloud.Ingredient;
+import com.example.tacocloud.Order;
 import com.example.tacocloud.Taco;
 import com.example.tacocloud.data.IngredientRepository;
+import com.example.tacocloud.data.TacoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -25,17 +25,30 @@ import static com.example.tacocloud.Ingredient.Type;
 @Slf4j
 @Controller
 @RequestMapping("/design")
+@SessionAttributes("order")
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepository;
+    private TacoRepository tacoRepository;
 
     @Autowired
-    public DesignTacoController(IngredientRepository ingredientRepository){
+    public DesignTacoController(IngredientRepository ingredientRepository,
+                                TacoRepository tacoRepository){
         this.ingredientRepository = ingredientRepository;
+        this.tacoRepository = tacoRepository;
     }
 
+    @ModelAttribute(name="order")
+    public Order order(){
+        return new Order();
+    }
+
+    @ModelAttribute(name="taco")
+    public Taco taco(){
+        return new Taco();
+    }
     @PostMapping
-    public String processDesign(@Valid Taco design, Errors errors){
+    public String processDesign(@Valid Taco design, Errors errors, @ModelAttribute Order order){
         //validation flow
         //1. 제출할 때 object="${taco}를 통해 Taco 객체에 바인딩
         //2. 바인딩되었을 때 Validation 시작.
@@ -45,9 +58,9 @@ public class DesignTacoController {
             return "design";
         }
 
-        //여기서 선택된 식자재 내역을 저장
-        //3장에서 할 예정
-        log.info("Processing design: " + design);
+        Taco saved = tacoRepository.save(design);
+        order.addDesign(saved);
+
         return "redirect:/orders/current";
     }
 
